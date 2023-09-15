@@ -29,7 +29,6 @@ public class Main {
                     .entrySet()
                     .stream()
                     .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-
                     .forEach(entry -> {
                         if (stringBuilder.indexOf("Cамое частое количество повторений ") == -1)
                             stringBuilder.append("Cамое частое количество повторений ").append(entry.getKey()).append(" (встретилось ").append(entry.getValue()).append(" раз)\n").append("Другие размеры:\n");
