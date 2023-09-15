@@ -10,42 +10,32 @@ public class Main {
         new Thread(() -> {
             for (int i = 0; i < 1000; i++) {
                 new Thread(() -> {
+                    String string = generateRoute("RLRFR", 100);
+                    int count = 0;
+                    for (char el : string.toCharArray()) {
+                        if (el == 'R') count++;
+                    }
                     synchronized (sizeToFreq) {
-                        String string = generateRoute("RLRFR", 100);
-                        int count = 0;
-                        for (char el : string.toCharArray()) {
-                            if (el == 'R') count++;
-                        }
                         if (sizeToFreq.containsKey(count)) {
                             sizeToFreq.put(count, sizeToFreq.get(count) + 1);
                         } else {
                             sizeToFreq.put(count, 1);
                         }
-                        sizeToFreq.notify();
-
-                        try {
-                            sizeToFreq.wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                     }
                 }).start();
             }
-            AtomicBoolean max = new AtomicBoolean(true);
+            StringBuilder stringBuilder = new StringBuilder();
             sizeToFreq
                     .entrySet()
                     .stream()
                     .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+
                     .forEach(entry -> {
-                        if (max.get()) System.out.println(
-                                "Cамое частое количество повторений " + entry.getKey() + " (встретилось " + entry.getValue() + " раз)\n"
-                                        + "Другие размеры:"
-                        );
-                        System.out.println(
-                                "- " + entry.getKey() + " (" + entry.getValue() + " раз)"
-                        );
-                        max.set(false);
+                        if (stringBuilder.indexOf("Cамое частое количество повторений ") == -1)
+                            stringBuilder.append("Cамое частое количество повторений ").append(entry.getKey()).append(" (встретилось ").append(entry.getValue()).append(" раз)\n").append("Другие размеры:\n");
+                        stringBuilder.append("- ").append(entry.getKey()).append(" (").append(entry.getValue()).append(" раз)\n");
                     });
+            System.out.println(stringBuilder);
         }).start();
 
     }
